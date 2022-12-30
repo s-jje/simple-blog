@@ -20,7 +20,7 @@ public class BoardResponseDto {
     private String username;
     private String createdAt;
     private String modifiedAt;
-    private List<CommentResponseDto> commentResponseDtoList;
+    private List<CommentResponseDto> commentList;
 
     public BoardResponseDto(Board board) {
         this.id = board.getId();
@@ -29,7 +29,7 @@ public class BoardResponseDto {
         this.username = board.getUsername();
         this.createdAt = board.getCreatedAt().toString();
         this.modifiedAt = board.getModifiedAt().toString();
-        this.commentResponseDtoList = board.getCommentList().stream().map(Comment::toResponseDto).collect(Collectors.toList());
+        this.commentList = board.getCommentList().stream().map(Comment::toResponseDto).collect(Collectors.toList());
     }
 
 }
