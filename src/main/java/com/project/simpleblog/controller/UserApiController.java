@@ -5,6 +5,7 @@ import com.project.simpleblog.dto.SignInRequestDto;
 import com.project.simpleblog.dto.SignUpRequestDto;
 import com.project.simpleblog.service.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
@@ -18,6 +19,7 @@ public class UserApiController {
 
     private final UserService userService;
 
+    @Secured("ROLE_ADMIN")
     @GetMapping("/users")
     public List<User> getUsers() {
         return userService.getUsers();

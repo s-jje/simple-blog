@@ -14,7 +14,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
 @RestController
-@RequestMapping("/api/admin/auth")
+@RequestMapping("/api/auth/admin")
 @RequiredArgsConstructor
 public class AdminApiController {
 
