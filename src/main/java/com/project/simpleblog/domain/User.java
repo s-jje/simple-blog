@@ -20,8 +20,7 @@ public class User {
     @NotNull
     private String password;
 
-    @NotNull
-    @Enumerated(value = EnumType.STRING)
+    @NotNull @Enumerated(value = EnumType.STRING)
     private UserRoleEnum role;
 
     public User(String username, String password, UserRoleEnum role) {
@@ -32,10 +31,6 @@ public class User {
 
     public boolean isValidId(Long id) {
         return this.id.equals(id);
-    }
-
-    public boolean isValidPassword(String password) {
-        return this.password.equals(password);
     }
 
     public boolean isAdmin() {
