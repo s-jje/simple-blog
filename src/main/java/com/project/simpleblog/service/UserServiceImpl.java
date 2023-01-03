@@ -4,10 +4,12 @@ import com.project.simpleblog.domain.User;
 import com.project.simpleblog.domain.UserRoleEnum;
 import com.project.simpleblog.dto.SignInRequestDto;
 import com.project.simpleblog.dto.SignUpRequestDto;
+import com.project.simpleblog.jwt.JwtTokenProvider;
 import com.project.simpleblog.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -20,8 +22,10 @@ import java.util.Optional;
 public class UserServiceImpl implements UserService {
 
     private static final String ADMIN_TOKEN = "AAABnvxRVklrnYxKZ0aHgTBcXukeZygoC";
+
     private final UserRepository userRepository;
-    private final JwtService jwtService;
+    private final JwtTokenProvider jwtTokenProvider;
+    private final PasswordEncoder passwordEncoder;
 
     @Transactional(readOnly = true)
     @Override
@@ -33,7 +37,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public void signUp(SignUpRequestDto signupRequestDto) {
         String username = signupRequestDto.getUsername();
-        String password = signupRequestDto.getPassword();
+        String password = passwordEncoder.encode(signupRequestDto.getPassword());
 
         Optional<User> found = userRepository.findByUsername(username);
         if (found.isPresent()) {
@@ -57,11 +61,11 @@ public class UserServiceImpl implements UserService {
     public void signIn(SignInRequestDto signInRequestDto, HttpServletResponse response) {
         User user = userRepository.findByUsername(signInRequestDto.getUsername()).orElseThrow(() -> new UsernameNotFoundException("등록된 사용자가 없습니다."));
 
-        if (!user.isValidPassword(signInRequestDto.getPassword())) {
+        if (!passwordEncoder.matches(signInRequestDto.getPassword(), user.getPassword())) {
             throw new BadCredentialsException("비밀번호가 일치하지 않습니다.");
         }
 
-        response.addHeader(JwtService.AUTHORIZATION_HEADER, jwtService.createToken(user.getUsername(), user.getRole()));
+        response.addHeader(JwtTokenProvider.AUTHORIZATION_HEADER, jwtTokenProvider.createToken(user.getUsername(), user.getRole()));
     }
 
 }
