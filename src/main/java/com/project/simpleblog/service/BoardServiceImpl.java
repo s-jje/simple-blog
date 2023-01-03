@@ -8,6 +8,7 @@ import com.project.simpleblog.dto.StatusResponseDto;
 import com.project.simpleblog.exception.UnauthorizedBehaviorException;
 import com.project.simpleblog.repository.BoardRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -37,8 +38,8 @@ public class BoardServiceImpl implements BoardService {
 
     @Transactional(readOnly = true)
     @Override
-    public List<BoardResponseDto> getBoards() {
-        return boardRepository.findAllByOrderByCreatedAtDesc().stream().map(Board::toResponseDto).collect(Collectors.toList());
+    public List<BoardResponseDto> getBoards(Pageable pageable) {
+        return boardRepository.findAllByOrderByCreatedAtDesc(pageable).stream().map(Board::toResponseDto).collect(Collectors.toList());
     }
 
     @Transactional

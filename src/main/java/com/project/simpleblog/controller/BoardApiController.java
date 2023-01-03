@@ -6,6 +6,7 @@ import com.project.simpleblog.dto.StatusResponseDto;
 import com.project.simpleblog.security.UserDetailsImpl;
 import com.project.simpleblog.service.BoardService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,8 +20,8 @@ public class BoardApiController {
     private final BoardService boardService;
 
     @GetMapping("/boards")
-    public List<BoardResponseDto> registerPage() {
-        return boardService.getBoards();
+    public List<BoardResponseDto> getBoards(Pageable pageable) {
+        return boardService.getBoards(pageable);
     }
 
     @PostMapping("/boards")
