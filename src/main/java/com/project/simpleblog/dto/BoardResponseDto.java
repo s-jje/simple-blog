@@ -11,7 +11,6 @@ import java.util.stream.Collectors;
 
 @Getter
 @AllArgsConstructor
-@NoArgsConstructor
 public class BoardResponseDto {
 
     private Long id;
