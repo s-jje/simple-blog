@@ -7,7 +7,6 @@ import com.project.simpleblog.security.UserDetailsImpl;
 import com.project.simpleblog.service.ReplyService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -28,7 +27,8 @@ public class ReplyApiController {
     }
 
     @DeleteMapping("/{boardId}/comments/{commentId}/replies/{replyId}")
-    public StatusResponseDto deleteReply(@PathVariable Long boardId, @PathVariable Long commentId, @PathVariable Long replyId, BindingResult bindingResult, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+    public StatusResponseDto deleteReply(@PathVariable Long boardId, @PathVariable Long commentId, @PathVariable Long replyId, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        System.out.println("replyId = " + replyId);
         return replyService.delete(commentId, replyId, userDetails.getUser());
     }
 
