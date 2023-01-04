@@ -1,10 +1,8 @@
 package com.project.simpleblog.jwt;
 
-import io.jsonwebtoken.Claims;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -24,21 +22,12 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         String token = jwtTokenProvider.resolveToken(request);
 
-        if (token != null) {
-            if (!jwtTokenProvider.isValidToken(token)) {
-                return;
-            }
-            Claims info = jwtTokenProvider.getUserInfoFromToken(token);
-            setAuthentication(info.getSubject());
+        if (token != null && jwtTokenProvider.isValidToken(token)) {
+            String username = jwtTokenProvider.getUsername(token);
+            Authentication authentication = jwtTokenProvider.createAuthentication(username);
+            SecurityContextHolder.getContext().setAuthentication(authentication);
         }
         filterChain.doFilter(request, response);
-    }
-
-    private void setAuthentication(String username) {
-        SecurityContext context = SecurityContextHolder.createEmptyContext();
-        Authentication authentication = jwtTokenProvider.createAuthentication(username);
-        context.setAuthentication(authentication);
-        SecurityContextHolder.setContext(context);
     }
 
 }

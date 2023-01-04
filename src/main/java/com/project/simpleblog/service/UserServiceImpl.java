@@ -7,13 +7,10 @@ import com.project.simpleblog.dto.SignUpRequestDto;
 import com.project.simpleblog.jwt.JwtTokenProvider;
 import com.project.simpleblog.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 
 @Service
@@ -23,8 +20,8 @@ public class UserServiceImpl implements UserService {
     private static final String ADMIN_TOKEN = "AAABnvxRVklrnYxKZ0aHgTBcXukeZygoC";
 
     private final JwtTokenProvider jwtTokenProvider;
-    private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final UserRepository userRepository;
 
     @Transactional(readOnly = true)
     @Override
@@ -45,7 +42,7 @@ public class UserServiceImpl implements UserService {
         UserRoleEnum role = UserRoleEnum.USER;
         if (signupRequestDto.isAdmin()) {
             if (!signupRequestDto.getAdminToken().equals(ADMIN_TOKEN)) {
-                throw new BadCredentialsException("관리자 암호가 틀려 등록이 불가능합니다.");
+                throw new IllegalArgumentException("관리자 암호가 틀려 등록이 불가능합니다.");
             }
             role = UserRoleEnum.ADMIN;
         }
@@ -57,10 +54,10 @@ public class UserServiceImpl implements UserService {
     @Transactional(readOnly = true)
     @Override
     public String signIn(SignInRequestDto signInRequestDto) {
-        User user = userRepository.findByUsername(signInRequestDto.getUsername()).orElseThrow(() -> new UsernameNotFoundException("등록된 사용자가 없습니다."));
+        User user = userRepository.findByUsername(signInRequestDto.getUsername()).orElseThrow(() -> new IllegalArgumentException("등록된 사용자가 없습니다."));
 
         if (!passwordEncoder.matches(signInRequestDto.getPassword(), user.getPassword())) {
-            throw new BadCredentialsException("비밀번호가 일치하지 않습니다.");
+            throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
         }
         return jwtTokenProvider.createToken(user.getUsername(), user.getRole());
     }
