@@ -21,8 +21,8 @@ public class UserApiController {
     private final UserService userService;
 
     @PostMapping("/sign-up")
-    public String signUp(@RequestBody @Valid SignUpRequestDto signupRequestDto) {
-        userService.signUp(signupRequestDto);
+    public String signUp(@RequestBody @Valid SignUpRequestDto signUpRequestDto) {
+        userService.signUp(signUpRequestDto);
         return "회원가입 성공";
     }
 
