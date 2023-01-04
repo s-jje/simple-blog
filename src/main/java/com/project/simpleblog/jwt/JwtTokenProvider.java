@@ -65,7 +65,6 @@ public class JwtTokenProvider {
                         .compact();
     }
 
-
     public boolean isValidToken(String token) throws IOException {
         try {
             Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);
