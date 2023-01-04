@@ -1,27 +1,24 @@
 package com.project.simpleblog.controller;
 
-import com.project.simpleblog.domain.User;
 import com.project.simpleblog.dto.SignInRequestDto;
 import com.project.simpleblog.dto.SignUpRequestDto;
+import com.project.simpleblog.jwt.JwtTokenProvider;
 import com.project.simpleblog.service.UserService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
-import java.util.List;
 
 @RestController
-@RequestMapping("/api/auth")
+@RequestMapping("/api/users")
 @RequiredArgsConstructor
 public class UserApiController {
 
     private final UserService userService;
-
-    @GetMapping("/users")
-    public List<User> getUsers() {
-        return userService.getUsers();
-    }
 
     @PostMapping("/sign-up")
     public String signUp(@RequestBody @Valid SignUpRequestDto signupRequestDto) {
@@ -31,7 +28,8 @@ public class UserApiController {
 
     @PostMapping("/sign-in")
     public String signIn(@RequestBody SignInRequestDto signInRequestDto, HttpServletResponse response) {
-        userService.signIn(signInRequestDto, response);
+        String token = userService.signIn(signInRequestDto);
+        response.addHeader(JwtTokenProvider.AUTHORIZATION_HEADER, token);
         return "로그인 성공";
     }
 
