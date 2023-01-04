@@ -14,6 +14,7 @@ public class BoardResponseDto {
 
     private Long id;
     private String title;
+    private String category;
     private String content;
     private String username;
     private String createdAt;
@@ -25,6 +26,7 @@ public class BoardResponseDto {
     public BoardResponseDto(Board board) {
         this.id = board.getId();
         this.title = board.getTitle();
+        this.category = board.getCategory();
         this.content = board.getContent();
         this.username = board.getUsername();
         this.createdAt = board.getCreatedAt().toString();

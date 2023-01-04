@@ -12,7 +12,8 @@ import javax.validation.constraints.NotNull;
 @Table(name = "Users")
 public class User {
 
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @NotNull
@@ -21,7 +22,8 @@ public class User {
     @NotNull
     private String password;
 
-    @NotNull @Enumerated(value = EnumType.STRING)
+    @NotNull
+    @Enumerated(value = EnumType.STRING)
     private UserRoleEnum role;
 
     public User(String username, String password, UserRoleEnum role) {

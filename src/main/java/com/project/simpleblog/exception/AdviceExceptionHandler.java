@@ -18,6 +18,12 @@ public class AdviceExceptionHandler {
         return new StatusResponseDto(e.getAllErrors().get(0).getDefaultMessage(), HttpStatus.BAD_REQUEST.value());
     }
 
+    @ExceptionHandler(CategoryAlreadyExistsException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public StatusResponseDto handleCategoryAlreadyExistsException(CategoryAlreadyExistsException e) {
+        return new StatusResponseDto(e.getMessage(), HttpStatus.BAD_REQUEST.value());
+    }
+
     @ExceptionHandler(IllegalArgumentException.class)
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
     public StatusResponseDto handleUnauthorized(Exception e) {

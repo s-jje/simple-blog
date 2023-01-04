@@ -7,6 +7,7 @@ import com.project.simpleblog.dto.BoardResponseDto;
 import com.project.simpleblog.dto.StatusResponseDto;
 import com.project.simpleblog.exception.UnauthorizedBehaviorException;
 import com.project.simpleblog.repository.BoardRepository;
+import com.project.simpleblog.repository.CategoryRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -21,13 +22,16 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class BoardServiceImpl implements BoardService {
 
+    private final CategoryRepository categoryRepository;
     private final BoardRepository boardRepository;
 
     @Transactional
     @Override
     public BoardResponseDto register(BoardRequestDto boardRequestDto, User user) {
-        Board board = boardRepository.save(new Board(boardRequestDto, user.getUsername(), user.getId()));
-        return new BoardResponseDto(board);
+        if (categoryRepository.findAllByUserIdOrderByCategory(user.getId()).stream().anyMatch(e -> e.getCategory().equals(boardRequestDto.getCategory()))) {
+            return boardRepository.save(new Board(boardRequestDto, user.getUsername(), user.getId())).toResponseDto();
+        }
+        throw new NoSuchElementException("해당 카테고리는 존재하지 않습니다.");
     }
 
     @Transactional(readOnly = true)
@@ -40,6 +44,12 @@ public class BoardServiceImpl implements BoardService {
     @Override
     public List<BoardResponseDto> getBoards(Pageable pageable) {
         return boardRepository.findAllByOrderByCreatedAtDesc(pageable).stream().map(Board::toResponseDto).collect(Collectors.toList());
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public List<BoardResponseDto> getBoardsByCategory(String categoryName, User user) {
+        return boardRepository.findAllByCategoryAndUserIdOrderByCreatedAtDesc(categoryName, user.getId()).stream().map(Board::toResponseDto).collect(Collectors.toList());
     }
 
     @Transactional
