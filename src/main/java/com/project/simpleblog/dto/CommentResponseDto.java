@@ -18,6 +18,8 @@ public class CommentResponseDto {
     private String createdAt;
     private String modifiedAt;
     private List<ReplyResponseDto> replyList;
+    private Integer likeCount;
+
     public CommentResponseDto(Comment comment) {
         this.id = comment.getId();
         this.content = comment.getContent();
@@ -25,6 +27,7 @@ public class CommentResponseDto {
         this.createdAt = comment.getCreatedAt().toString();
         this.modifiedAt = comment.getModifiedAt().toString();
         this.replyList = comment.getReplyList().stream().map(Reply::toResponseDto).collect(Collectors.toList());
+        this.likeCount=comment.getLikeCount();
     }
 
 }
