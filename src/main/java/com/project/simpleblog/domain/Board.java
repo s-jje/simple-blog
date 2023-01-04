@@ -31,6 +31,16 @@ public class Board extends TimeStamped {
     @NotNull
     private Long userId;
 
+    //좋아요기능
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "board")
+    private List<BoardLike> boardLikeList = new ArrayList<>();
+
+    //좋아요 개수
+    @Column(nullable = false)
+    private Integer likeCount;
+
+
+
     @OneToMany(mappedBy = "board", fetch = FetchType.LAZY, cascade = CascadeType.ALL) @OrderBy("createdAt desc")
     private final List<Comment> commentList = new ArrayList<>();
 
@@ -39,10 +49,11 @@ public class Board extends TimeStamped {
         this.content = boardRequestDto.getContent();
         this.username = username;
         this.userId = userId;
+        this.likeCount = 0;
     }
 
     public BoardResponseDto toResponseDto() {
-        return new BoardResponseDto(id, username, title, content, getCreatedAt().toString(), getModifiedAt().toString(), commentList.stream().map(Comment::toResponseDto).collect(Collectors.toList()));
+        return new BoardResponseDto(id, username, title, content, getCreatedAt().toString(), getModifiedAt().toString(), commentList.stream().map(Comment::toResponseDto).collect(Collectors.toList()),likeCount);
     }
 
     public void update(BoardRequestDto boardRequestDto) {
@@ -50,4 +61,8 @@ public class Board extends TimeStamped {
         this.content = boardRequestDto.getContent();
     }
 
+    public void updateLikeCount(boolean checklike) {
+        likeCount += checklike ? 1:-1;
+        if(likeCount < 0) likeCount = 0;
+    }
 }
