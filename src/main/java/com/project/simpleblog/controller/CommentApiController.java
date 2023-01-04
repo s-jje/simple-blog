@@ -6,14 +6,11 @@ import com.project.simpleblog.dto.StatusResponseDto;
 import com.project.simpleblog.security.UserDetailsImpl;
 import com.project.simpleblog.service.CommentLikeService;
 import com.project.simpleblog.service.CommentService;
-import io.jsonwebtoken.Claims;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
-
-import javax.servlet.http.HttpServletRequest;
 
 @RestController
 @RequestMapping("/api/boards")

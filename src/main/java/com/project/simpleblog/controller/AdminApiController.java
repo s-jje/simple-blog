@@ -1,9 +1,11 @@
 package com.project.simpleblog.controller;
 
+import com.project.simpleblog.domain.Category;
 import com.project.simpleblog.domain.User;
 import com.project.simpleblog.dto.SignInRequestDto;
 import com.project.simpleblog.dto.SignUpRequestDto;
 import com.project.simpleblog.jwt.JwtTokenProvider;
+import com.project.simpleblog.service.CategoryService;
 import com.project.simpleblog.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -18,6 +20,7 @@ import java.util.List;
 public class AdminApiController {
 
     private final UserService userService;
+    private final CategoryService categoryService;
 
     @PostMapping("/sign-up")
     public String signUp(@RequestBody @Valid SignUpRequestDto signUpRequestDto) {
@@ -37,4 +40,8 @@ public class AdminApiController {
         return userService.getUsers();
     }
 
+    @GetMapping("/categories")
+    public List<Category> getCategories() {
+        return categoryService.getCategories();
+    }
 }

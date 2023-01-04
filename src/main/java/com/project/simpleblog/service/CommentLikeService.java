@@ -9,7 +9,6 @@ import com.project.simpleblog.repository.CommentLikeRepository;
 import com.project.simpleblog.repository.CommentRepository;
 import com.project.simpleblog.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

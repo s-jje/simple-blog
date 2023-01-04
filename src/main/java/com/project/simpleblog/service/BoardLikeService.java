@@ -5,10 +5,7 @@ import com.project.simpleblog.domain.BoardLike;
 import com.project.simpleblog.domain.User;
 import com.project.simpleblog.repository.BoardLikeRepository;
 import com.project.simpleblog.repository.BoardRepository;
-import com.project.simpleblog.repository.UserRepository;
-import com.project.simpleblog.security.UserDetailsImpl;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

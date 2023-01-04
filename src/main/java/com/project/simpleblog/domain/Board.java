@@ -23,6 +23,9 @@ public class Board extends TimeStamped {
     private String title;
 
     @NotNull
+    private String category;
+
+    @NotNull
     private String content;
 
     @NotNull
@@ -39,13 +42,12 @@ public class Board extends TimeStamped {
     @Column(nullable = false)
     private Integer likeCount;
 
-
-
     @OneToMany(mappedBy = "board", fetch = FetchType.LAZY, cascade = CascadeType.ALL) @OrderBy("createdAt desc")
     private final List<Comment> commentList = new ArrayList<>();
 
     public Board(BoardRequestDto boardRequestDto, String username, Long userId) {
         this.title = boardRequestDto.getTitle();
+        this.category = boardRequestDto.getCategory();
         this.content = boardRequestDto.getContent();
         this.username = username;
         this.userId = userId;
@@ -53,11 +55,12 @@ public class Board extends TimeStamped {
     }
 
     public BoardResponseDto toResponseDto() {
-        return new BoardResponseDto(id, username, title, content, getCreatedAt().toString(), getModifiedAt().toString(), commentList.stream().map(Comment::toResponseDto).collect(Collectors.toList()),likeCount);
+        return new BoardResponseDto(id, title, category, content, username, getCreatedAt().toString(), getModifiedAt().toString(), commentList.stream().map(Comment::toResponseDto).collect(Collectors.toList()),likeCount);
     }
 
     public void update(BoardRequestDto boardRequestDto) {
         this.title = boardRequestDto.getTitle();
+        this.category = boardRequestDto.getCategory();
         this.content = boardRequestDto.getContent();
     }
 
@@ -65,4 +68,5 @@ public class Board extends TimeStamped {
         likeCount += checklike ? 1:-1;
         if(likeCount < 0) likeCount = 0;
     }
+
 }
