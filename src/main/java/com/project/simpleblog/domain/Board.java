@@ -31,6 +31,11 @@ public class Board extends TimeStamped {
     @NotNull
     private Long userId;
 
+    @NotNull
+    private String categoryName;
+
+    @NotNull
+
     @OneToMany(mappedBy = "board", fetch = FetchType.LAZY, cascade = CascadeType.ALL) @OrderBy("createdAt desc")
     private final List<Comment> commentList = new ArrayList<>();
 

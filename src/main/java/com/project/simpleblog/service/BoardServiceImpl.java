@@ -1,12 +1,14 @@
 package com.project.simpleblog.service;
 
 import com.project.simpleblog.domain.Board;
+import com.project.simpleblog.domain.Category;
 import com.project.simpleblog.domain.User;
 import com.project.simpleblog.dto.BoardRequestDto;
 import com.project.simpleblog.dto.BoardResponseDto;
 import com.project.simpleblog.dto.StatusResponseDto;
 import com.project.simpleblog.exception.UnauthorizedBehaviorException;
 import com.project.simpleblog.repository.BoardRepository;
+import com.project.simpleblog.repository.CategoryRepository;
 import com.project.simpleblog.repository.UserRepository;
 import io.jsonwebtoken.Claims;
 import lombok.RequiredArgsConstructor;
@@ -27,11 +29,13 @@ public class BoardServiceImpl implements BoardService {
     private final UserRepository userRepository;
     private final BoardRepository boardRepository;
     private final JwtService jwtService;
+    private final CategoryRepository categoryRepository;
 
     @Transactional
     @Override
     public BoardResponseDto register(BoardRequestDto boardRequestDto, HttpServletRequest request) {
         Claims claims = jwtService.getValidClaims(request);
+
 
         User user = userRepository.findByUsername(claims.getSubject()).orElseThrow(() -> new UsernameNotFoundException("사용자가 존재하지 않습니다."));
         Board board = boardRepository.saveAndFlush(new Board(boardRequestDto, user.getUsername(), user.getId()));
