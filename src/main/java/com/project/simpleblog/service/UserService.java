@@ -1,6 +1,7 @@
 package com.project.simpleblog.service;
 
 import com.project.simpleblog.domain.User;
+import com.project.simpleblog.dto.DeleteUserRequestDto;
 import com.project.simpleblog.dto.SignInRequestDto;
 import com.project.simpleblog.dto.SignUpRequestDto;
 
@@ -14,5 +15,7 @@ public interface UserService {
     void signUp(SignUpRequestDto signupRequestDto);
 
     void signIn(SignInRequestDto signInRequestDto, HttpServletResponse response);
+
+    void deleteUser(DeleteUserRequestDto deleteUserRequestDto);
 
 }

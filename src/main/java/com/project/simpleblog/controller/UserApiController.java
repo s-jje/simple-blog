@@ -1,6 +1,7 @@
 package com.project.simpleblog.controller;
 
 import com.project.simpleblog.domain.User;
+import com.project.simpleblog.dto.DeleteUserRequestDto;
 import com.project.simpleblog.dto.SignInRequestDto;
 import com.project.simpleblog.dto.SignUpRequestDto;
 import com.project.simpleblog.service.UserService;
@@ -33,6 +34,12 @@ public class UserApiController {
     public String signIn(@RequestBody SignInRequestDto signInRequestDto, HttpServletResponse response) {
         userService.signIn(signInRequestDto, response);
         return "로그인 성공";
+    }
+
+    @DeleteMapping("/users")
+    public String deleteUser(@RequestBody DeleteUserRequestDto deleteUserRequestDto) {
+        userService.deleteUser(deleteUserRequestDto);
+        return "회원탈퇴 성공";
     }
 
 }
