@@ -34,19 +34,30 @@ public class Comment extends TimeStamped {
     @OneToMany(mappedBy = "comment", fetch = FetchType.LAZY, cascade = CascadeType.ALL) @OrderBy("createdAt desc")
     private final List<Reply> replyList = new ArrayList<>();
 
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "comment")
+    private List<CommentLike> CommentLikeList = new ArrayList<>();
+
+    @Column(nullable = false)
+    private Integer likeCount; //좋아요 개수
+
     public Comment(CommentRequestDto commentRequestDto, String username, Long userId, Board board) {
         this.content = commentRequestDto.getContent();
         this.username = username;
         this.userId = userId;
         this.board = board;
+        this.likeCount = 0;
     }
 
     public CommentResponseDto toResponseDto() {
-        return new CommentResponseDto(id, content, username, getCreatedAt().toString(), getModifiedAt().toString(), replyList.stream().map(Reply::toResponseDto).collect(Collectors.toList()));
+        return new CommentResponseDto(id, content, username, getCreatedAt().toString(), getModifiedAt().toString(), replyList.stream().map(Reply::toResponseDto).collect(Collectors.toList()),likeCount);
     }
 
     public void update(CommentRequestDto commentRequestDto) {
         this.content = commentRequestDto.getContent();
     }
 
+    public void updateLikeCmCount(boolean checklike){
+        likeCount += checklike ? 1:-1;
+        if(likeCount < 0) likeCount = 0;
+    }
 }

@@ -20,6 +20,8 @@ public class BoardResponseDto {
     private String modifiedAt;
     private List<CommentResponseDto> commentList;
 
+    private Integer likeCount;
+
     public BoardResponseDto(Board board) {
         this.id = board.getId();
         this.title = board.getTitle();
@@ -28,6 +30,7 @@ public class BoardResponseDto {
         this.createdAt = board.getCreatedAt().toString();
         this.modifiedAt = board.getModifiedAt().toString();
         this.commentList = board.getCommentList().stream().map(Comment::toResponseDto).collect(Collectors.toList());
+        this.likeCount = board.getLikeCount();
     }
 
 }
