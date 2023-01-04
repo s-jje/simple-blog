@@ -7,6 +7,9 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Entity
 @Getter
@@ -28,6 +31,9 @@ public class Comment extends TimeStamped {
     @ManyToOne(fetch = FetchType.LAZY)
     private Board board;
 
+    @OneToMany(mappedBy = "comment", fetch = FetchType.LAZY, cascade = CascadeType.ALL) @OrderBy("createdAt desc")
+    private final List<Reply> replyList = new ArrayList<>();
+
     public Comment(CommentRequestDto commentRequestDto, String username, Long userId, Board board) {
         this.content = commentRequestDto.getContent();
         this.username = username;
@@ -36,7 +42,7 @@ public class Comment extends TimeStamped {
     }
 
     public CommentResponseDto toResponseDto() {
-        return new CommentResponseDto(id, content, username, getCreatedAt().toString(), getModifiedAt().toString());
+        return new CommentResponseDto(id, content, username, getCreatedAt().toString(), getModifiedAt().toString(), replyList.stream().map(Reply::toResponseDto).collect(Collectors.toList()));
     }
 
     public void update(CommentRequestDto commentRequestDto) {
