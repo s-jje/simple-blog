@@ -19,4 +19,9 @@ public class SignUpRequestDto {
 
     private String adminToken = "";
 
+    public void adminSignUp(String adminToken) {
+        this.admin = true;
+        this.adminToken = adminToken;
+    }
+
 }

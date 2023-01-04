@@ -4,6 +4,7 @@ import com.project.simpleblog.domain.User;
 import com.project.simpleblog.dto.SignInRequestDto;
 import com.project.simpleblog.dto.SignUpRequestDto;
 
+import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 
 public interface UserService {
@@ -12,6 +13,6 @@ public interface UserService {
 
     void signUp(SignUpRequestDto signupRequestDto);
 
-    String signIn(SignInRequestDto signInRequestDto);
+    void signIn(SignInRequestDto signInRequestDto, HttpServletResponse response);
 
 }

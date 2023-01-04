@@ -4,12 +4,15 @@ import com.project.simpleblog.domain.Board;
 import com.project.simpleblog.domain.Comment;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
+import javax.persistence.Column;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Getter
 @AllArgsConstructor
+@NoArgsConstructor
 public class BoardResponseDto {
 
     private Long id;
@@ -18,7 +21,9 @@ public class BoardResponseDto {
     private String username;
     private String createdAt;
     private String modifiedAt;
-    private List<CommentResponseDto> commentList;
+    private List<CommentResponseDto> commentResponseDtoList;
+
+    private Integer likeCount; //좋아요 개수
 
     public BoardResponseDto(Board board) {
         this.id = board.getId();
@@ -27,7 +32,9 @@ public class BoardResponseDto {
         this.username = board.getUsername();
         this.createdAt = board.getCreatedAt().toString();
         this.modifiedAt = board.getModifiedAt().toString();
-        this.commentList = board.getCommentList().stream().map(Comment::toResponseDto).collect(Collectors.toList());
+        this.commentResponseDtoList = board.getCommentList().stream().map(Comment::toResponseDto).collect(Collectors.toList());
+        this.likeCount = board.getLikeCount();
     }
+
 
 }

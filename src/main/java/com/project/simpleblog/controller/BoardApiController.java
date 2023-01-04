@@ -3,13 +3,18 @@ package com.project.simpleblog.controller;
 import com.project.simpleblog.dto.BoardRequestDto;
 import com.project.simpleblog.dto.BoardResponseDto;
 import com.project.simpleblog.dto.StatusResponseDto;
-import com.project.simpleblog.security.UserDetailsImpl;
+import com.project.simpleblog.service.BoardLikeService;
 import com.project.simpleblog.service.BoardService;
+import com.project.simpleblog.service.JwtService;
+import io.jsonwebtoken.Claims;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 @RestController
@@ -18,15 +23,17 @@ import java.util.List;
 public class BoardApiController {
 
     private final BoardService boardService;
+    private final BoardLikeService boardLikeService;
+    private final JwtService jwtService;
 
     @GetMapping("/boards")
-    public List<BoardResponseDto> getBoards(Pageable pageable) {
-        return boardService.getBoards(pageable);
+    public List<BoardResponseDto> registerPage() {
+        return boardService.getBoards();
     }
 
     @PostMapping("/boards")
-    public BoardResponseDto registerBoard(@RequestBody BoardRequestDto boardRequestDto, @AuthenticationPrincipal UserDetailsImpl userDetails) {
-        return boardService.register(new BoardRequestDto(boardRequestDto.getTitle(), boardRequestDto.getContent()), userDetails.getUser());
+    public BoardResponseDto registerBoard(@RequestBody BoardRequestDto boardRequestDto, HttpServletRequest request) {
+        return boardService.register(new BoardRequestDto(boardRequestDto.getTitle(), boardRequestDto.getContent()), request);
     }
 
     @GetMapping("/boards/{id}")
@@ -35,13 +42,21 @@ public class BoardApiController {
     }
 
     @PatchMapping("/boards/{id}")
-    public BoardResponseDto updateBoard(@PathVariable("id") Long id, @RequestBody BoardRequestDto boardRequestDto, @AuthenticationPrincipal UserDetailsImpl userDetails) {
-        return boardService.update(id, boardRequestDto, userDetails.getUser());
+    public BoardResponseDto updateBoard(@PathVariable("id") Long id, @RequestBody BoardRequestDto boardRequestDto, HttpServletRequest request) {
+        return boardService.update(id, boardRequestDto, request);
     }
 
     @DeleteMapping("/boards/{id}")
-    public StatusResponseDto deleteBoard(@PathVariable("id") Long id, @AuthenticationPrincipal UserDetailsImpl userDetails) {
-        return boardService.delete(id, userDetails.getUser());
+    public StatusResponseDto deleteBoard(@PathVariable("id") Long id, HttpServletRequest request) {
+        return boardService.delete(id, request);
     }
+
+    @PatchMapping("/boards/{id}/likes")
+    public ResponseEntity<String> updateBoardLike(@PathVariable Long id,HttpServletRequest request){
+        Claims claims = jwtService.getValidClaims(request);
+        return new ResponseEntity<>(boardLikeService.updateBoardLike(id,claims.getSubject()),HttpStatus.OK);
+    }
+
+
 
 }

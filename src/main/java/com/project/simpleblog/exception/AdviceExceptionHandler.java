@@ -1,10 +1,14 @@
 package com.project.simpleblog.exception;
 
 import com.project.simpleblog.dto.StatusResponseDto;
+import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.MalformedJwtException;
+import io.jsonwebtoken.UnsupportedJwtException;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import java.util.NoSuchElementException;
@@ -13,31 +17,27 @@ import java.util.NoSuchElementException;
 public class AdviceExceptionHandler {
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
     public StatusResponseDto handleMethodArgumentNotValidException(MethodArgumentNotValidException e) {
         return new StatusResponseDto(e.getAllErrors().get(0).getDefaultMessage(), HttpStatus.BAD_REQUEST.value());
     }
 
-    @ExceptionHandler(IllegalArgumentException.class)
-    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    @ExceptionHandler({SecurityException.class, MalformedJwtException.class, ExpiredJwtException.class,
+            UnsupportedJwtException.class, IllegalArgumentException.class, BadCredentialsException.class})
     public StatusResponseDto handleUnauthorized(Exception e) {
         return new StatusResponseDto(e.getMessage(), HttpStatus.UNAUTHORIZED.value());
     }
 
     @ExceptionHandler(UnauthorizedBehaviorException.class)
-    @ResponseStatus(HttpStatus.FORBIDDEN)
-    public StatusResponseDto handleForbidden(Exception e) {
+    public StatusResponseDto handleForbidden(UnauthorizedBehaviorException e) {
         return new StatusResponseDto(e.getMessage(), HttpStatus.FORBIDDEN.value());
     }
 
-    @ExceptionHandler(NoSuchElementException.class)
-    @ResponseStatus(HttpStatus.NOT_FOUND)
+    @ExceptionHandler({NoSuchElementException.class, UsernameNotFoundException.class})
     public StatusResponseDto handleNotFound(Exception e) {
         return new StatusResponseDto(e.getMessage(), HttpStatus.NOT_FOUND.value());
     }
 
     @ExceptionHandler(Exception.class)
-    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public StatusResponseDto handleInternalServerError(Exception e) {
         return new StatusResponseDto(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR.value());
     }
