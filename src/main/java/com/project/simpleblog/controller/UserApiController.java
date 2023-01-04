@@ -3,6 +3,7 @@ package com.project.simpleblog.controller;
 import com.project.simpleblog.domain.User;
 import com.project.simpleblog.dto.SignInRequestDto;
 import com.project.simpleblog.dto.SignUpRequestDto;
+import com.project.simpleblog.jwt.JwtTokenProvider;
 import com.project.simpleblog.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.annotation.Secured;
@@ -19,8 +20,8 @@ public class UserApiController {
 
     private final UserService userService;
 
-    @Secured("ROLE_ADMIN")
     @GetMapping("/users")
+    @Secured("ROLE_ADMIN")
     public List<User> getUsers() {
         return userService.getUsers();
     }
@@ -33,7 +34,8 @@ public class UserApiController {
 
     @PostMapping("/sign-in")
     public String signIn(@RequestBody SignInRequestDto signInRequestDto, HttpServletResponse response) {
-        userService.signIn(signInRequestDto, response);
+        String token = userService.signIn(signInRequestDto, response);
+        response.addHeader(JwtTokenProvider.AUTHORIZATION_HEADER, token);
         return "로그인 성공";
     }
 

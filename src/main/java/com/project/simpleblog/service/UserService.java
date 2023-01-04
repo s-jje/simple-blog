@@ -13,6 +13,6 @@ public interface UserService {
 
     void signUp(SignUpRequestDto signupRequestDto);
 
-    void signIn(SignInRequestDto signInRequestDto, HttpServletResponse response);
+    String signIn(SignInRequestDto signInRequestDto);
 
 }

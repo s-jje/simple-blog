@@ -6,11 +6,8 @@ import com.project.simpleblog.dto.SignInRequestDto;
 import com.project.simpleblog.dto.SignUpRequestDto;
 import com.project.simpleblog.jwt.JwtTokenProvider;
 import com.project.simpleblog.repository.UserRepository;
-import com.project.simpleblog.security.UserDetailsImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -21,20 +18,22 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-public class UserDetailsServiceImpl implements UserDetailsService {
+public class UserServiceImpl implements UserService {
 
     private static final String ADMIN_TOKEN = "AAABnvxRVklrnYxKZ0aHgTBcXukeZygoC";
 
-    private final UserRepository userRepository;
     private final JwtTokenProvider jwtTokenProvider;
+    private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
 
     @Transactional(readOnly = true)
+    @Override
     public List<User> getUsers() {
         return userRepository.findAll();
     }
 
     @Transactional
+    @Override
     public void signUp(SignUpRequestDto signupRequestDto) {
         String username = signupRequestDto.getUsername();
         String password = passwordEncoder.encode(signupRequestDto.getPassword());
@@ -55,11 +54,15 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         userRepository.save(user);
     }
 
+    @Transactional(readOnly = true)
     @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        System.out.println("username = " + username);
-        User user = userRepository.findByUsername(username).orElseThrow(() -> new UsernameNotFoundException("사용자를 찾을 수 없습니다."));
-        return new UserDetailsImpl(user, user.getUsername());
+    public String signIn(SignInRequestDto signInRequestDto) {
+        User user = userRepository.findByUsername(signInRequestDto.getUsername()).orElseThrow(() -> new UsernameNotFoundException("등록된 사용자가 없습니다."));
+
+        if (!passwordEncoder.matches(signInRequestDto.getPassword(), user.getPassword())) {
+            throw new BadCredentialsException("비밀번호가 일치하지 않습니다.");
+        }
+        return jwtTokenProvider.createToken(user.getUsername(), user.getRole());
     }
 
 }
