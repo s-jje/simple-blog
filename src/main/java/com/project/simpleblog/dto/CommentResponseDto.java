@@ -3,7 +3,6 @@ package com.project.simpleblog.dto;
 import com.project.simpleblog.domain.Comment;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 
 @Getter
 @AllArgsConstructor

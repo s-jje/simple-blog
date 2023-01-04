@@ -4,7 +4,6 @@ import com.project.simpleblog.domain.Board;
 import com.project.simpleblog.domain.Comment;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 
 import java.util.List;
 import java.util.stream.Collectors;
