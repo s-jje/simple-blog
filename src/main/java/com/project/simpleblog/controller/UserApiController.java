@@ -34,7 +34,7 @@ public class UserApiController {
 
     @PostMapping("/sign-in")
     public String signIn(@RequestBody SignInRequestDto signInRequestDto, HttpServletResponse response) {
-        String token = userService.signIn(signInRequestDto, response);
+        String token = userService.signIn(signInRequestDto);
         response.addHeader(JwtTokenProvider.AUTHORIZATION_HEADER, token);
         return "로그인 성공";
     }
