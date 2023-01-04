@@ -47,7 +47,15 @@
     - Spring Security 를 사용하여 토큰 검사 및 인증하기
     - 선택한 댓글의 DB 저장 유무를 확인하기
     - 선택한 댓글이 있다면 댓글 삭제하고 Client 로 성공했다는 메시지, 상태코드 반환하기
-11. 예외 처리
+11. 게시글 좋아요 API
+    - 사용자는 선택한 게시글에 ‘좋아요’를 할 수 있습니다.
+    - 사용자가 이미 ‘좋아요’한 게시글에 다시 ‘좋아요’ 요청을 하면 ‘좋아요’를 했던 기록이 취소됩니다.
+    - 요청이 성공하면 Client 로 성공했다는 메시지, 상태코드 반환하기
+12. 댓글 좋아요 API
+    - 사용자는 선택한 댓글에 ‘좋아요’를 할 수 있습니다.
+    - 사용자가 이미 ‘좋아요’한 댓글에 다시 ‘좋아요’ 요청을 하면 ‘좋아요’를 했던 기록이 취소됩니다.
+    - 요청이 성공하면 Client 로 성공했다는 메시지, 상태코드 반환하기
+13. 예외 처리
     - 토큰이 필요한 API 요청에서 토큰을 전달하지 않았거나 정상 토큰이 아닐 때는 "토큰이 유효하지 않습니다." 라는 에러메시지와 statusCode: 400을 Client에 반환하기
     - 토큰이 있고, 유효한 토큰이지만 해당 사용자가 작성한 게시글/댓글이 아닌 경우에는 “작성자만 삭제/수정할 수 있습니다.”라는 에러메시지와 statusCode: 400을 Client에 반환하기
     - DB에 이미 존재하는 username으로 회원가입을 요청한 경우 "중복된 username 입니다." 라는 에러메시지와 statusCode: 400을 Client에 반환하기
@@ -65,3 +73,19 @@
     - 카테고리 별로 게시글을 조회하는 기능 추가하기
 - RefreshToken을 적용
 - 프로젝트에 swagger를 적용
+
+## API 명세서
+https://www.notion.so/c49abfe125654391acc646db8cd2bbba?v=35fe07e9dc6049b2b855f3a55b4ae223
+
+<img width="851" alt="스크린샷 2023-01-05 오전 1 41 30" src="https://user-images.githubusercontent.com/117062933/210605579-224d7d89-6865-47b3-8d7e-873cc7d37f0e.png">
+<img width="852" alt="스크린샷 2023-01-05 오전 1 41 55" src="https://user-images.githubusercontent.com/117062933/210605594-1250785f-a629-4483-81fb-df8c0185acd7.png">
+<img width="849" alt="스크린샷 2023-01-05 오전 1 42 16" src="https://user-images.githubusercontent.com/117062933/210605609-42ba3c93-02f5-401f-8d76-324eee9838d9.png">
+<img width="849" alt="스크린샷 2023-01-05 오전 1 42 38" src="https://user-images.githubusercontent.com/117062933/210605627-5ba824e3-a05a-43a8-9a8c-832b8bdcf6b4.png">
+
+
+## ERD
+![ERD](https://user-images.githubusercontent.com/117062933/210604502-85ec437f-de82-438c-89b3-8a266580d89f.png)
+
+## 와이어프레임
+![image](https://user-images.githubusercontent.com/117062933/210604916-3c0e3f41-048c-4a55-9d17-103dc69f7091.png)
+
