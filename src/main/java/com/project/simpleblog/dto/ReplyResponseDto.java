@@ -12,12 +12,15 @@ public class ReplyResponseDto {
     private final String createdAt;
     private final String modifiedAt;
 
+    private Integer likeCount;
+
     public ReplyResponseDto(Reply reply) {
         this.id = reply.getId();
         this.content = reply.getContent();
         this.username = reply.getUsername();
         this.createdAt = reply.getCreatedAt().toString();
         this.modifiedAt = reply.getModifiedAt().toString();
+        this.likeCount = reply.getLikeCount();
     }
 
 }
