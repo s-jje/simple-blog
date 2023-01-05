@@ -7,10 +7,8 @@ import lombok.NoArgsConstructor;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-public class BoardRequestDto {
+public class ReplyRequestDto {
 
-    private String title;
-    private String category;
     private String content;
 
 }

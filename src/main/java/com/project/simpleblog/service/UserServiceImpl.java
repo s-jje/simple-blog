@@ -12,6 +12,7 @@ import com.project.simpleblog.exception.UnauthorizedBehaviorException;
 import com.project.simpleblog.repository.UserRepository;
 import io.jsonwebtoken.Claims;
 import lombok.RequiredArgsConstructor;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -24,13 +25,19 @@ import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 @Service
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
 
     private static final String ADMIN_TOKEN = "AAABnvxRVklrnYxKZ0aHgTBcXukeZygoC";
+
+    private final JwtTokenProvider jwtTokenProvider;
+    private final PasswordEncoder passwordEncoder;
     private final UserRepository userRepository;
-    private final JwtService jwtService;
 
     @Transactional(readOnly = true)
     @Override
@@ -40,37 +47,34 @@ public class UserServiceImpl implements UserService {
 
     @Transactional
     @Override
-    public void signUp(SignUpRequestDto signupRequestDto) {
-        String username = signupRequestDto.getUsername();
-        String password = signupRequestDto.getPassword();
+    public void signUp(SignUpRequestDto signUpRequestDto) {
+        String username = signUpRequestDto.getUsername();
+        String password = passwordEncoder.encode(signUpRequestDto.getPassword());
 
-        Optional<User> found = userRepository.findByUsername(username);
-        if (found.isPresent()) {
+        userRepository.findByUsername(username).ifPresent(user -> {
             throw new IllegalArgumentException("중복된 사용자가 존재합니다.");
-        }
+        });
 
         UserRoleEnum role = UserRoleEnum.USER;
-        if (signupRequestDto.isAdmin()) {
-            if (!signupRequestDto.getAdminToken().equals(ADMIN_TOKEN)) {
-                throw new BadCredentialsException("관리자 암호가 틀려 등록이 불가능합니다.");
+        if (signUpRequestDto.isAdmin()) {
+            if (!signUpRequestDto.getAdminToken().equals(ADMIN_TOKEN)) {
+                throw new IllegalArgumentException("관리자 암호가 틀려 등록이 불가능합니다.");
             }
             role = UserRoleEnum.ADMIN;
         }
 
-        User user = new User(username, password, role);
-        userRepository.save(user);
+        userRepository.save(new User(username, password, role));
     }
 
     @Transactional(readOnly = true)
     @Override
-    public void signIn(SignInRequestDto signInRequestDto, HttpServletResponse response) {
-        User user = userRepository.findByUsername(signInRequestDto.getUsername()).orElseThrow(() -> new UsernameNotFoundException("등록된 사용자가 없습니다."));
+    public String signIn(SignInRequestDto signInRequestDto) {
+        User user = userRepository.findByUsername(signInRequestDto.getUsername()).orElseThrow(() -> new IllegalArgumentException("등록된 사용자가 없습니다."));
 
-        if (!user.isValidPassword(signInRequestDto.getPassword())) {
-            throw new BadCredentialsException("비밀번호가 일치하지 않습니다.");
+        if (!passwordEncoder.matches(signInRequestDto.getPassword(), user.getPassword())) {
+            throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
         }
-
-        response.addHeader(JwtService.AUTHORIZATION_HEADER, jwtService.createToken(user.getUsername(), user.getRole()));
+        return jwtTokenProvider.createToken(user.getUsername(), user.getRole());
     }
 
     @Transactional

@@ -12,7 +12,8 @@ import javax.validation.constraints.NotNull;
 @Table (name = "users")
 public class User {
 
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @NotNull
@@ -33,10 +34,6 @@ public class User {
 
     public boolean isValidId(Long id) {
         return this.id.equals(id);
-    }
-
-    public boolean isValidPassword(String password) {
-        return this.password.equals(password);
     }
 
     public boolean isAdmin() {

@@ -1,35 +1,34 @@
 package com.project.simpleblog.dto;
 
 import com.project.simpleblog.domain.Board;
-import com.project.simpleblog.domain.Comment;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Getter
-@AllArgsConstructor
-@NoArgsConstructor
 public class BoardResponseDto {
 
-    private Long id;
-    private String title;
-    private String content;
-    private String username;
-    private String createdAt;
-    private String modifiedAt;
-    private List<CommentResponseDto> commentResponseDtoList;
+    private final Long id;
+    private final String title;
+    private final String category;
+    private final String content;
+    private final String username;
+    private final String createdAt;
+    private final String modifiedAt;
+    private final List<CommentResponseDto> commentList;
+    private final Integer likeCount;
 
     public BoardResponseDto(Board board) {
         this.id = board.getId();
         this.title = board.getTitle();
+        this.category = board.getCategory();
         this.content = board.getContent();
         this.username = board.getUsername();
         this.createdAt = board.getCreatedAt().toString();
         this.modifiedAt = board.getModifiedAt().toString();
-        this.commentResponseDtoList = board.getCommentList().stream().map(Comment::toResponseDto).collect(Collectors.toList());
+        this.commentList = board.getCommentList().stream().map(CommentResponseDto::new).collect(Collectors.toList());
+        this.likeCount = board.getLikeCount();
     }
 
 }

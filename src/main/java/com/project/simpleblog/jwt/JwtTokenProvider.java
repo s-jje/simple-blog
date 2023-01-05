@@ -1,4 +1,4 @@
-package com.project.simpleblog.service;
+package com.project.simpleblog.jwt;
 
 import com.project.simpleblog.domain.UserRoleEnum;
 import io.jsonwebtoken.*;
@@ -6,30 +6,37 @@ import io.jsonwebtoken.security.Keys;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.authentication.AuthenticationCredentialsNotFoundException;
-import org.springframework.stereotype.Service;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
 import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
 import java.security.Key;
 import java.util.Base64;
 import java.util.Date;
 
 @Slf4j
-@Service
+@Component
 @RequiredArgsConstructor
-public class JwtService {
+public class JwtTokenProvider {
 
     public static final String AUTHORIZATION_HEADER = "Authorization";
     public static final String AUTHORIZATION_KEY = "auth";
     private static final String BEARER_PREFIX = "Bearer ";
-    private static final long TOKEN_TIME = 60 * 60 * 1000L;
+
+    private static final long ACCESS_TOKEN_TIME = 60 * 60 * 1000L;
 
     @Value("${jwt.secret.key}")
     private String secretKey;
     private Key key;
     private final SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.HS256;
+
+    private final UserDetailsService userDetailsService;
 
     @PostConstruct
     public void init() {
@@ -52,24 +59,24 @@ public class JwtService {
                 Jwts.builder()
                         .setSubject(username)
                         .claim(AUTHORIZATION_KEY, role)
-                        .setExpiration(new Date(date.getTime() + TOKEN_TIME))
+                        .setExpiration(new Date(date.getTime() + ACCESS_TOKEN_TIME))
                         .setIssuedAt(date)
                         .signWith(key, signatureAlgorithm)
                         .compact();
     }
 
-    public boolean isValidToken(String token) {
+    public boolean isValidToken(String token) throws IOException {
         try {
             Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);
             return true;
         } catch (SecurityException | MalformedJwtException e) {
-            log.info("Invalid JWT signature, 유효하지 않는 JWT 서명 입니다.");
+            log.info("Invalid JWT signature, 유효하지 않은 JWT 서명입니다.");
         } catch (ExpiredJwtException e) {
             log.info("Expired JWT token, 만료된 JWT token 입니다.");
         } catch (UnsupportedJwtException e) {
-            log.info("Unsupported JWT token, 지원되지 않는 JWT 토큰 입니다.");
+            log.info("Unsupported JWT token, 지원되지 않는 JWT 토큰입니다.");
         } catch (IllegalArgumentException e) {
-            log.info("JWT claims is empty, 잘못된 JWT 토큰 입니다.");
+            log.info("JWT claims is empty, 잘못된 JWT 토큰입니다.");
         }
         return false;
     }
@@ -78,18 +85,13 @@ public class JwtService {
         return Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token).getBody();
     }
 
-    public Claims getValidClaims(HttpServletRequest request) {
-        String token = resolveToken(request);
+    public String getUsername(String token) {
+        return getUserInfoFromToken(token).getSubject();
+    }
 
-        if (token != null) {
-            if (isValidToken(token)) {
-                return getUserInfoFromToken(token);
-            } else {
-                throw new IllegalArgumentException("토큰이 유효하지 않습니다.");
-            }
-        } else {
-            throw new AuthenticationCredentialsNotFoundException("토큰이 유효하지 않습니다.");
-        }
+    public Authentication getAuthentication(String username) {
+        UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+        return new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
     }
 
 }

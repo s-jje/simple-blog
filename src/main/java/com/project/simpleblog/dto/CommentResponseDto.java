@@ -1,20 +1,21 @@
 package com.project.simpleblog.dto;
 
 import com.project.simpleblog.domain.Comment;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Getter
-@NoArgsConstructor
-@AllArgsConstructor
 public class CommentResponseDto {
 
-    private Long id;
-    private String content;
-    private String username;
-    private String createdAt;
-    private String modifiedAt;
+    private final Long id;
+    private final String content;
+    private final String username;
+    private final String createdAt;
+    private final String modifiedAt;
+    private final List<ReplyResponseDto> replyList;
+    private final Integer likeCount;
 
     public CommentResponseDto(Comment comment) {
         this.id = comment.getId();
@@ -22,6 +23,8 @@ public class CommentResponseDto {
         this.username = comment.getUsername();
         this.createdAt = comment.getCreatedAt().toString();
         this.modifiedAt = comment.getModifiedAt().toString();
+        this.replyList = comment.getReplyList().stream().map(ReplyResponseDto::new).collect(Collectors.toList());
+        this.likeCount=comment.getLikeCount();
     }
 
 }
