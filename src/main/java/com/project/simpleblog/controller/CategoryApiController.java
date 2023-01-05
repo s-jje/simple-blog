@@ -30,8 +30,6 @@ public class CategoryApiController {
 
     @PutMapping("/{categoryName}")
     public CategoryResponseDto update(@RequestBody CategoryRequestDto categoryRequestDto, @PathVariable String username, @PathVariable String categoryName, @AuthenticationPrincipal UserDetailsImpl userDetails) {
-        System.out.println("username = " + username);
-        System.out.println("categoryName = " + categoryName);
         return categoryService.update(categoryRequestDto, categoryName, userDetails.getUser());
     }
 

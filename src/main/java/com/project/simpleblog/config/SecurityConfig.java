@@ -1,5 +1,6 @@
 package com.project.simpleblog.config;
 
+import com.project.simpleblog.domain.UserRoleEnum;
 import com.project.simpleblog.jwt.JwtAuthenticationFilter;
 import com.project.simpleblog.jwt.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
@@ -34,8 +35,8 @@ public class SecurityConfig {
                 .and()
                     .authorizeRequests()
                     .antMatchers("/api/**/sign-up", "/api/**/sign-in").permitAll()
-                    .antMatchers(HttpMethod.GET, "/api/boards", "/api/boards/{id}").permitAll()
-                    .antMatchers( "/api/admin/**").hasRole("ADMIN")
+                    .antMatchers(HttpMethod.GET, "/api/boards", "/api/boards/{id}", "/{username}/categories/{categoryName}/boards", "/api/users/{username}/categories").permitAll()
+                    .antMatchers("/api/admin/**").hasRole(UserRoleEnum.ADMIN.name())
                     .anyRequest().authenticated()
                 .and()
                     .exceptionHandling()

@@ -1,7 +1,6 @@
 package com.project.simpleblog.domain;
 
 import com.project.simpleblog.dto.ReplyRequestDto;
-import com.project.simpleblog.dto.ReplyResponseDto;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -33,10 +32,6 @@ public class Reply extends TimeStamped {
         this.username = username;
         this.userId = userId;
         this.comment = comment;
-    }
-
-    public ReplyResponseDto toResponseDto() {
-        return new ReplyResponseDto(id, content, username, getCreatedAt().toString(), getModifiedAt().toString());
     }
 
     public void update(ReplyRequestDto replyRequestDto) {

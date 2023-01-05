@@ -44,4 +44,5 @@ public class AdminApiController {
     public List<Category> getCategories() {
         return categoryService.getCategories();
     }
+
 }

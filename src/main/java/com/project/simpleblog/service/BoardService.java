@@ -16,7 +16,9 @@ public interface BoardService {
 
     List<BoardResponseDto> getBoards(Pageable pageable);
 
-    List<BoardResponseDto> getBoardsByCategory(String categoryName, User user);
+    List<BoardResponseDto> getBoardsByUser(User user);
+
+    List<BoardResponseDto> getBoardsByUserAndCategory(String categoryName, User user);
 
     BoardResponseDto update(Long id, BoardRequestDto requestDto, User user);
 

@@ -18,7 +18,6 @@ public class BoardLikeService {
     private final BoardRepository boardRepository;
     private final BoardLikeRepository boardLikeRepository;
 
-
     @Transactional
     public String updateBoardLike(Long Id, User user){
         boolean checklike = false;

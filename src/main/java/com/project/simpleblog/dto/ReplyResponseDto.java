@@ -1,18 +1,16 @@
 package com.project.simpleblog.dto;
 
 import com.project.simpleblog.domain.Reply;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 @Getter
-@AllArgsConstructor
 public class ReplyResponseDto {
 
-    private Long id;
-    private String content;
-    private String username;
-    private String createdAt;
-    private String modifiedAt;
+    private final Long id;
+    private final String content;
+    private final String username;
+    private final String createdAt;
+    private final String modifiedAt;
 
     public ReplyResponseDto(Reply reply) {
         this.id = reply.getId();

@@ -1,7 +1,6 @@
 package com.project.simpleblog.domain;
 
 import com.project.simpleblog.dto.BoardRequestDto;
-import com.project.simpleblog.dto.BoardResponseDto;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -9,7 +8,6 @@ import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Entity
 @Getter
@@ -36,7 +34,7 @@ public class Board extends TimeStamped {
 
     //좋아요기능
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "board")
-    private List<BoardLike> boardLikeList = new ArrayList<>();
+    private final List<BoardLike> boardLikeList = new ArrayList<>();
 
     //좋아요 개수
     @Column(nullable = false)
@@ -54,19 +52,19 @@ public class Board extends TimeStamped {
         this.likeCount = 0;
     }
 
-    public BoardResponseDto toResponseDto() {
-        return new BoardResponseDto(id, title, category, content, username, getCreatedAt().toString(), getModifiedAt().toString(), commentList.stream().map(Comment::toResponseDto).collect(Collectors.toList()),likeCount);
-    }
-
     public void update(BoardRequestDto boardRequestDto) {
         this.title = boardRequestDto.getTitle();
         this.category = boardRequestDto.getCategory();
         this.content = boardRequestDto.getContent();
     }
 
-    public void updateLikeCount(boolean checklike) {
-        likeCount += checklike ? 1:-1;
-        if(likeCount < 0) likeCount = 0;
+    public void updateCategory(String category) {
+        this.category = category;
+    }
+
+    public void updateLikeCount(boolean checkLike) {
+        likeCount += checkLike ? 1 : -1;
+        if (likeCount < 0) likeCount = 0;
     }
 
 }

@@ -89,7 +89,7 @@ public class JwtTokenProvider {
         return getUserInfoFromToken(token).getSubject();
     }
 
-    public Authentication createAuthentication(String username) {
+    public Authentication getAuthentication(String username) {
         UserDetails userDetails = userDetailsService.loadUserByUsername(username);
         return new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
     }

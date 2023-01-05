@@ -31,24 +31,23 @@ public class UserServiceImpl implements UserService {
 
     @Transactional
     @Override
-    public void signUp(SignUpRequestDto signupRequestDto) {
-        String username = signupRequestDto.getUsername();
-        String password = passwordEncoder.encode(signupRequestDto.getPassword());
+    public void signUp(SignUpRequestDto signUpRequestDto) {
+        String username = signUpRequestDto.getUsername();
+        String password = passwordEncoder.encode(signUpRequestDto.getPassword());
 
         userRepository.findByUsername(username).ifPresent(user -> {
             throw new IllegalArgumentException("중복된 사용자가 존재합니다.");
         });
 
         UserRoleEnum role = UserRoleEnum.USER;
-        if (signupRequestDto.isAdmin()) {
-            if (!signupRequestDto.getAdminToken().equals(ADMIN_TOKEN)) {
+        if (signUpRequestDto.isAdmin()) {
+            if (!signUpRequestDto.getAdminToken().equals(ADMIN_TOKEN)) {
                 throw new IllegalArgumentException("관리자 암호가 틀려 등록이 불가능합니다.");
             }
             role = UserRoleEnum.ADMIN;
         }
 
-        User user = new User(username, password, role);
-        userRepository.save(user);
+        userRepository.save(new User(username, password, role));
     }
 
     @Transactional(readOnly = true)
