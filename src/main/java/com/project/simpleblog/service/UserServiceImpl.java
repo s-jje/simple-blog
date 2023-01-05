@@ -9,6 +9,8 @@ import com.project.simpleblog.dto.SignInRequestDto;
 import com.project.simpleblog.dto.SignUpRequestDto;
 import com.project.simpleblog.dto.StatusResponseDto;
 import com.project.simpleblog.exception.UnauthorizedBehaviorException;
+import com.project.simpleblog.jwt.JwtTokenProvider;
+import com.project.simpleblog.repository.BoardRepository;
 import com.project.simpleblog.repository.UserRepository;
 import io.jsonwebtoken.Claims;
 import lombok.RequiredArgsConstructor;
@@ -37,7 +39,9 @@ public class UserServiceImpl implements UserService {
 
     private final JwtTokenProvider jwtTokenProvider;
     private final PasswordEncoder passwordEncoder;
+
     private final UserRepository userRepository;
+    private final BoardRepository boardRepository;
 
     @Transactional(readOnly = true)
     @Override
@@ -81,14 +85,14 @@ public class UserServiceImpl implements UserService {
     @Override
     public void deleteUser(DeleteUserRequestDto deleteUserRequestDto){
         String username = deleteUserRequestDto.getUsername();
+        User user = userRepository.findByUsername(username).orElseThrow(() -> new IllegalArgumentException("등록된 아이디가 없습니다."));
 
-        User user = userRepository.findByUsername(username).orElseThrow(
-                () -> new IllegalArgumentException("등록된 아이디가 없습니다.")
-        );
-        if (!user.isValidPassword(deleteUserRequestDto.getPassword())) {
-            throw new BadCredentialsException("비밀번호가 일치하지 않습니다.");
+        if (passwordEncoder.matches(deleteUserRequestDto.getPassword(), user.getPassword())) {
+            boardRepository.deleteAllByUserId(user.getId());
+            userRepository.delete(user);
+            return;
         }
-        userRepository.deleteUserById(user.getId());
+        throw new BadCredentialsException("비밀번호가 일치하지 않습니다.");
     }
 
 }

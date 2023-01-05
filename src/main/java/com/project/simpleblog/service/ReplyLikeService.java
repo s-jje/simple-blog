@@ -23,8 +23,8 @@ public class ReplyLikeService implements LikeService {
     public String likeOrUnlike(Long replyId, User user){
         Reply reply = replyRepository.findById(replyId).orElseThrow(()->new NoSuchElementException("해당 대댓글은 존재하지 않습니다."));
 
-        for(ReplyLike replyLike : reply.getReplyLikeList()){
-            if(replyLike.getUsername().equals(user.getUsername())){
+        for (ReplyLike replyLike : reply.getReplyLikeList()) {
+            if (replyLike.getUsername().equals(user.getUsername())) {
                 replyLikeRepository.delete(replyLike);
                 reply.updateLikeReCount(false);
                 return "좋아요 해제";
