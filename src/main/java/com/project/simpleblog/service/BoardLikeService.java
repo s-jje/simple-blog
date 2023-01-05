@@ -13,30 +13,27 @@ import java.util.NoSuchElementException;
 
 @Service
 @RequiredArgsConstructor
-public class BoardLikeService {
+public class BoardLikeService implements LikeService {
 
     private final BoardRepository boardRepository;
     private final BoardLikeRepository boardLikeRepository;
 
-
     @Transactional
-    public String updateBoardLike(Long Id, User user){
-        boolean checklike = false;
+    @Override
+    public String likeOrUnlike(Long boardId, User user) {
+        Board board = boardRepository.findById(boardId).orElseThrow(() -> new NoSuchElementException("해당 게시글은 존재하지 않습니다."));
 
-        Board board = boardRepository.findById(Id).orElseThrow(() -> new NoSuchElementException("해당 게시글은 존재하지 않습니다."));
-
-        for(BoardLike boardLike: board.getBoardLikeList()) {
-            if (boardLike.getUsername().equals(user.getUsername())){
+        for (BoardLike boardLike : board.getBoardLikeList()) {
+            if (boardLike.getUsername().equals(user.getUsername())) {
                 boardLikeRepository.delete(boardLike);
-                checklike = false;
-                board.updateLikeCount(checklike);
+                board.updateLikeCount(false);
                 return "좋아요 해제";
             }
         }
-        boardLikeRepository.save(new BoardLike(board,user.getUsername()));
-        checklike = true;
-        board.updateLikeCount(checklike);
-        return  "좋아요 등록";
+        boardLikeRepository.save(new BoardLike(board, user.getUsername()));
+        board.updateLikeCount(true);
+        return "좋아요 등록";
 
     }
+
 }

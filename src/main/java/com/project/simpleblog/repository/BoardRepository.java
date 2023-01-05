@@ -13,7 +13,11 @@ public interface BoardRepository extends JpaRepository<Board, Long> {
 
     Optional<Board> findById(Long id);
 
-    List<Board> findAllByCategoryAndUserIdOrderByCreatedAtDesc(String category, Long userId);
+    void deleteAllByUserId(Long userId);
+
+    List<Board> findAllByUserIdOrderByCreatedAtDesc(Long userId);
+
+    List<Board> findAllByUserIdAndCategoryOrderByCreatedAtDesc(Long userId, String category);
 
     List<Board> findAllByOrderByCreatedAtDesc(Pageable pageable);
 

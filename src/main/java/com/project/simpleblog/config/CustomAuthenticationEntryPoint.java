@@ -21,12 +21,18 @@ public class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint 
     @Override
     public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) throws IOException, ServletException {
         log.info("AuthenticationException: {}", authException.getMessage());
+        request.getHeaderNames().asIterator().forEachRemaining(headerName -> {
+            log.info("{}: {}", headerName, request.getHeader(headerName));
+        });
+        request.getParameterNames().asIterator().forEachRemaining(parameterName -> {
+            log.info("{}: {}", parameterName, request.getParameter(parameterName));
+        });
 
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
         response.setCharacterEncoding("utf-8");
         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
 
-        StatusResponseDto statusResponseDto = new StatusResponseDto("로그인이 필요한 서비스입니다.", HttpStatus.FORBIDDEN.value());
+        StatusResponseDto statusResponseDto = new StatusResponseDto("로그인이 필요한 서비스입니다.", HttpStatus.UNAUTHORIZED.value());
         response.getWriter().write(new ObjectMapper().writeValueAsString(statusResponseDto));
     }
 

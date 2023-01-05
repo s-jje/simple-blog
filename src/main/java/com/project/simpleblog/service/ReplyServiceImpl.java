@@ -26,7 +26,7 @@ public class ReplyServiceImpl implements ReplyService {
     @Transactional
     @Override
     public ReplyResponseDto register(Long commentId, ReplyRequestDto replyRequestDto, User user) {
-        Comment comment = commentRepository.findById(commentId).orElseThrow(() -> new NoSuchElementException("해당 댓은 존재하지 않습니다."));
+        Comment comment = commentRepository.findById(commentId).orElseThrow(() -> new NoSuchElementException("해당 댓글은 존재하지 않습니다."));
         Reply reply = replyRepository.save(new Reply(replyRequestDto, user.getUsername(), user.getId(), comment));
         return new ReplyResponseDto(reply);
     }
@@ -39,7 +39,7 @@ public class ReplyServiceImpl implements ReplyService {
 
         if (user.isAdmin() || user.isValidId(reply.getUserId())) {
             reply.update(replyRequestDto);
-            return reply.toResponseDto();
+            return new ReplyResponseDto(reply);
         }
         throw new UnauthorizedBehaviorException("작성자만 수정할 수 있습니다.");
     }

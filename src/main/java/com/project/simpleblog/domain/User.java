@@ -9,7 +9,7 @@ import javax.validation.constraints.NotNull;
 @Entity
 @Getter
 @NoArgsConstructor
-@Table(name = "Users")
+@Table (name = "users")
 public class User {
 
     @Id
@@ -34,6 +34,10 @@ public class User {
 
     public boolean isValidId(Long id) {
         return this.id.equals(id);
+    }
+
+    public boolean isValidPassword(String password) {
+        return this.password.equals(password);
     }
 
     public boolean isAdmin() {
