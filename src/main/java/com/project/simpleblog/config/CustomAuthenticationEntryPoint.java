@@ -21,6 +21,12 @@ public class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint 
     @Override
     public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) throws IOException, ServletException {
         log.info("AuthenticationException: {}", authException.getMessage());
+        request.getHeaderNames().asIterator().forEachRemaining(headerName -> {
+            log.info("{}: {}", headerName, request.getHeader(headerName));
+        });
+        request.getParameterNames().asIterator().forEachRemaining(parameterName -> {
+            log.info("{}: {}", parameterName, request.getParameter(parameterName));
+        });
 
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
         response.setCharacterEncoding("utf-8");
