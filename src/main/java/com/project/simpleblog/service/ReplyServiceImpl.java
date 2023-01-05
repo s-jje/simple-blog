@@ -39,7 +39,7 @@ public class ReplyServiceImpl implements ReplyService {
 
         if (user.isAdmin() || user.isValidId(reply.getUserId())) {
             reply.update(replyRequestDto);
-            return reply.toResponseDto();
+            return new ReplyResponseDto(reply);
         }
         throw new UnauthorizedBehaviorException("작성자만 수정할 수 있습니다.");
     }

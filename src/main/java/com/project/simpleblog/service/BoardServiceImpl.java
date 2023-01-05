@@ -1,6 +1,7 @@
 package com.project.simpleblog.service;
 
 import com.project.simpleblog.domain.Board;
+import com.project.simpleblog.domain.Category;
 import com.project.simpleblog.domain.User;
 import com.project.simpleblog.dto.BoardRequestDto;
 import com.project.simpleblog.dto.BoardResponseDto;
@@ -29,7 +30,8 @@ public class BoardServiceImpl implements BoardService {
     @Override
     public BoardResponseDto register(BoardRequestDto boardRequestDto, User user) {
         if (categoryRepository.findAllByUserIdOrderByCategory(user.getId()).stream().anyMatch(e -> e.getCategory().equals(boardRequestDto.getCategory()))) {
-            return boardRepository.save(new Board(boardRequestDto, user.getUsername(), user.getId())).toResponseDto();
+            Board board = boardRepository.save(new Board(boardRequestDto, user.getUsername(), user.getId()));
+            return new BoardResponseDto(board);
         }
         throw new NoSuchElementException("해당 카테고리는 존재하지 않습니다.");
     }
@@ -37,19 +39,26 @@ public class BoardServiceImpl implements BoardService {
     @Transactional(readOnly = true)
     @Override
     public BoardResponseDto getBoard(Long id) {
-        return boardRepository.findById(id).orElseThrow(() -> new NoSuchElementException("해당 게시글은 존재하지 않습니다.")).toResponseDto();
+        Board board = boardRepository.findById(id).orElseThrow(() -> new NoSuchElementException("해당 게시글은 존재하지 않습니다."));
+        return new BoardResponseDto(board);
     }
 
     @Transactional(readOnly = true)
     @Override
     public List<BoardResponseDto> getBoards(Pageable pageable) {
-        return boardRepository.findAllByOrderByCreatedAtDesc(pageable).stream().map(Board::toResponseDto).collect(Collectors.toList());
+        return boardRepository.findAllByOrderByCreatedAtDesc(pageable).stream().map(BoardResponseDto::new).collect(Collectors.toList());
     }
 
     @Transactional(readOnly = true)
     @Override
-    public List<BoardResponseDto> getBoardsByCategory(String categoryName, User user) {
-        return boardRepository.findAllByCategoryAndUserIdOrderByCreatedAtDesc(categoryName, user.getId()).stream().map(Board::toResponseDto).collect(Collectors.toList());
+    public List<BoardResponseDto> getBoardsByUser(User user) {
+        return boardRepository.findAllByUserIdOrderByCreatedAtDesc(user.getId()).stream().map(BoardResponseDto::new).collect(Collectors.toList());
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public List<BoardResponseDto> getBoardsByUserAndCategory(String categoryName, User user) {
+        return boardRepository.findAllByUserIdAndCategoryOrderByCreatedAtDesc(user.getId(), categoryName).stream().map(BoardResponseDto::new).collect(Collectors.toList());
     }
 
     @Transactional
@@ -58,8 +67,11 @@ public class BoardServiceImpl implements BoardService {
         Board board = boardRepository.findById(id).orElseThrow(() -> new NoSuchElementException("해당 게시글은 존재하지 않습니다."));
 
         if (user.isAdmin() || user.isValidId(board.getUserId())) {
+            if (!boardRequestDto.getCategory().equals(board.getCategory())) {
+                Category category = categoryRepository.findByUserIdAndCategory(user.getId(), boardRequestDto.getCategory()).orElseThrow(() -> new NoSuchElementException("해당 카테고리는 존재하지 않습니다."));
+            }
             board.update(boardRequestDto);
-            return board.toResponseDto();
+            return new BoardResponseDto(board);
         }
         throw new UnauthorizedBehaviorException("작성자만 수정할 수 있습니다.");
     }

@@ -21,6 +21,12 @@ public class CustomAccessDeniedHandler implements AccessDeniedHandler {
     @Override
     public void handle(HttpServletRequest request, HttpServletResponse response, AccessDeniedException accessDeniedException) throws IOException, ServletException {
         log.info("AccessDeniedException: {}", accessDeniedException.getMessage());
+        request.getHeaderNames().asIterator().forEachRemaining(headerName -> {
+            log.info("{}: {}", headerName, request.getHeader(headerName));
+        });
+        request.getParameterNames().asIterator().forEachRemaining(parameterName -> {
+            log.info("{}: {}", parameterName, request.getParameter(parameterName));
+        });
 
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
         response.setCharacterEncoding("utf-8");
