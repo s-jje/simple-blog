@@ -37,7 +37,7 @@ public class CommentApiController {
 
     @PatchMapping("/{boardId}/comments/{commentId}/likes")
     public ResponseEntity<String> updateCommentLike(@PathVariable Long boardId, @PathVariable Long commentId, @AuthenticationPrincipal UserDetailsImpl userDetails){
-        return new ResponseEntity<>(commentLikeService.updateCommentLike(boardId,commentId,userDetails.getUser()), HttpStatus.OK);
+        return new ResponseEntity<>(commentLikeService.likeOrUnlike(commentId, userDetails.getUser()), HttpStatus.OK);
     }
 
 }

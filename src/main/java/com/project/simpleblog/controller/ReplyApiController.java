@@ -41,7 +41,7 @@ public class ReplyApiController {
 
     @PatchMapping("/{boardId}/comments/{commentId}/replies/{replyId}/likes")
     public ResponseEntity<String> updateReplyLike(@PathVariable Long boardId,@PathVariable Long commentId, @PathVariable Long replyId, @AuthenticationPrincipal UserDetailsImpl userDetails){
-        return new ResponseEntity<>(replyLikeService.updateReplyLike(boardId,commentId,replyId,userDetails.getUser()), HttpStatus.OK);
+        return new ResponseEntity<>(replyLikeService.likeOrUnlike(replyId, userDetails.getUser()), HttpStatus.OK);
     }
 
 }

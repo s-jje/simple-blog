@@ -60,7 +60,7 @@ public class BoardApiController {
 
     @PatchMapping("/boards/{id}/likes")
     public ResponseEntity<String> updateBoardLike(@PathVariable Long id, @AuthenticationPrincipal UserDetailsImpl userDetails){
-        return new ResponseEntity<>(boardLikeService.updateBoardLike(id,userDetails.getUser()), HttpStatus.OK);
+        return new ResponseEntity<>(boardLikeService.likeOrUnlike(id, userDetails.getUser()), HttpStatus.OK);
     }
 
 }

@@ -15,30 +15,26 @@ import java.util.NoSuchElementException;
 
 @Service
 @RequiredArgsConstructor
-public class CommentLikeService {
+public class CommentLikeService implements LikeService {
 
-    private final BoardRepository boardRepository;
     private final CommentRepository commentRepository;
     private final CommentLikeRepository commentLikeRepository;
 
     @Transactional
-    public String updateCommentLike(Long boardId,Long commentId,User user) {
-        boolean checklike = false;
-
-        Board board = boardRepository.findById(boardId).orElseThrow(() -> new NoSuchElementException("해당 게시글은 존재하지 않습니다."));
-        Comment comment = commentRepository.findById(commentId).orElseThrow(()->new NoSuchElementException("해당 댓글은 존재하지 않습니다"));
+    @Override
+    public String likeOrUnlike(Long commentId, User user) {
+        Comment comment = commentRepository.findById(commentId).orElseThrow(() -> new NoSuchElementException("해당 댓글은 존재하지 않습니다"));
 
         for (CommentLike commentLike : comment.getCommentLikeList()) {
             if (commentLike.getUsername().equals(user.getUsername())) {
                 commentLikeRepository.delete(commentLike);
-                checklike = false;
-                comment.updateLikeCmCount(checklike);
+                comment.updateLikeCmCount(false);
                 return "좋아요 해제";
             }
         }
-        commentLikeRepository.save(new CommentLike(comment,user.getUsername()));
-        checklike = true;
-        comment.updateLikeCmCount(checklike);
+        commentLikeRepository.save(new CommentLike(comment, user.getUsername()));
+        comment.updateLikeCmCount(true);
         return "좋아요 등록";
     }
+
 }

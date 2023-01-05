@@ -24,4 +24,5 @@ public class ReplyLike extends TimeStamped {
         this.reply = reply;
         this.username = username;
     }
+
 }
