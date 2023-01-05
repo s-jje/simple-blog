@@ -7,7 +7,6 @@ import com.project.simpleblog.domain.User;
 import com.project.simpleblog.repository.BoardRepository;
 import com.project.simpleblog.repository.CommentLikeRepository;
 import com.project.simpleblog.repository.CommentRepository;
-import com.project.simpleblog.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,7 +16,7 @@ import java.util.NoSuchElementException;
 @Service
 @RequiredArgsConstructor
 public class CommentLikeService {
-    private final UserRepository userRepository;
+
     private final BoardRepository boardRepository;
     private final CommentRepository commentRepository;
     private final CommentLikeRepository commentLikeRepository;

@@ -17,35 +17,14 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-import javax.annotation.PostConstruct;
-import java.util.ArrayList;
-import java.util.List;
-
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
 public class SecurityConfig {
 
-    private final List<String> permitAllUrls = new ArrayList<>();
-    private final List<String> permitAllWithGetMethodUrls = new ArrayList<>();
-    private final List<String> permitAdminUrls = new ArrayList<>();
-
     private final JwtTokenProvider jwtTokenProvider;
     private final CustomAuthenticationEntryPoint authenticationEntryPoint;
     private final CustomAccessDeniedHandler accessDeniedHandler;
-
-    @PostConstruct
-    public void init() {
-        permitAllUrls.add("/api/**/sign-up");
-        permitAllUrls.add("/api/**/sign-in");
-
-        permitAllWithGetMethodUrls.add("/api/boards");
-        permitAllWithGetMethodUrls.add("/api/boards/{id}");
-        permitAllWithGetMethodUrls.add("/{username}/categories/{categoryName}/boards");
-        permitAllWithGetMethodUrls.add("/api/users/{username}/categories");
-
-        permitAdminUrls.add("/api/admin/**");
-    }
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -55,9 +34,9 @@ public class SecurityConfig {
                     .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                     .authorizeRequests()
-                    .antMatchers(permitAllUrls.toArray(String[]::new)).permitAll()
-                    .antMatchers(HttpMethod.GET, permitAllWithGetMethodUrls.toArray(String[]::new)).permitAll()
-                    .antMatchers(permitAdminUrls.toArray(String[]::new)).hasRole(UserRoleEnum.ADMIN.name())
+                    .antMatchers("/api/**/sign-up", "/api/**/sign-in").permitAll()
+                    .antMatchers(HttpMethod.GET, "/api/boards", "/api/boards/{id}", "/{username}/categories/{categoryName}/boards", "/api/users/{username}/categories").permitAll()
+                    .antMatchers("/api/admin/**").hasRole(UserRoleEnum.ADMIN.name())
                     .anyRequest().authenticated()
                 .and()
                     .exceptionHandling()

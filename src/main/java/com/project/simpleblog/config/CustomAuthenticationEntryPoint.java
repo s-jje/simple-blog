@@ -32,7 +32,7 @@ public class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint 
         response.setCharacterEncoding("utf-8");
         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
 
-        StatusResponseDto statusResponseDto = new StatusResponseDto("로그인이 필요한 서비스입니다.", HttpStatus.FORBIDDEN.value());
+        StatusResponseDto statusResponseDto = new StatusResponseDto("로그인이 필요한 서비스입니다.", HttpStatus.UNAUTHORIZED.value());
         response.getWriter().write(new ObjectMapper().writeValueAsString(statusResponseDto));
     }
 

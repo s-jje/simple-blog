@@ -1,12 +1,15 @@
 package com.project.simpleblog.dto;
 
-import lombok.AllArgsConstructor;
+import com.project.simpleblog.domain.Category;
 import lombok.Getter;
 
 @Getter
-@AllArgsConstructor
 public class CategoryResponseDto {
 
-    private String category;
+    private final String category;
+
+    public CategoryResponseDto(Category category) {
+        this.category = category.getCategory();
+    }
 
 }
