@@ -1,5 +1,7 @@
 package com.project.simpleblog.controller;
 
+import com.project.simpleblog.domain.User;
+import com.project.simpleblog.dto.DeleteUserRequestDto;
 import com.project.simpleblog.dto.SignInRequestDto;
 import com.project.simpleblog.dto.SignUpRequestDto;
 import com.project.simpleblog.jwt.JwtTokenProvider;
@@ -31,6 +33,12 @@ public class UserApiController {
         String token = userService.signIn(signInRequestDto);
         response.addHeader(JwtTokenProvider.AUTHORIZATION_HEADER, token);
         return "로그인 성공";
+    }
+
+    @DeleteMapping("/users")
+    public String deleteUser(@RequestBody DeleteUserRequestDto deleteUserRequestDto) {
+        userService.deleteUser(deleteUserRequestDto);
+        return "회원탈퇴 성공";
     }
 
 }
