@@ -29,8 +29,8 @@ public class Reply extends TimeStamped {
     @ManyToOne(fetch = FetchType.LAZY)
     private Comment comment;
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy ="reply" )
-    private List<ReplyLike> replyLikeList = new ArrayList<>();
+    @OneToMany(mappedBy = "reply", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private final List<ReplyLike> replyLikeList = new ArrayList<>();
 
     @Column(nullable = false)
     private Integer likeCount;

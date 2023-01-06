@@ -33,7 +33,7 @@ public class Board extends TimeStamped {
     private Long userId;
 
     //좋아요기능
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "board")
+    @OneToMany(mappedBy = "board", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private final List<BoardLike> boardLikeList = new ArrayList<>();
 
     //좋아요 개수
