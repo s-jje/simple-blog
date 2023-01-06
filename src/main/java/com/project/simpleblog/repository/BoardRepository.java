@@ -13,12 +13,12 @@ public interface BoardRepository extends JpaRepository<Board, Long> {
 
     Optional<Board> findById(Long id);
 
-    void deleteAllByUserId(Long userId);
-
     List<Board> findAllByUserIdOrderByCreatedAtDesc(Long userId);
 
     List<Board> findAllByUserIdAndCategoryOrderByCreatedAtDesc(Long userId, String category);
 
     List<Board> findAllByOrderByCreatedAtDesc(Pageable pageable);
+
+    void deleteAllByUserId(Long userId);
 
 }

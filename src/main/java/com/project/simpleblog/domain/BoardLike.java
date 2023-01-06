@@ -15,7 +15,6 @@ public class BoardLike extends TimeStamped {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "board_id", nullable = false)
     private Board board;
     private  String username;
 

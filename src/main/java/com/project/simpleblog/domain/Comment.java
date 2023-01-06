@@ -32,7 +32,7 @@ public class Comment extends TimeStamped {
     @OneToMany(mappedBy = "comment", fetch = FetchType.LAZY, cascade = CascadeType.ALL) @OrderBy("createdAt desc")
     private final List<Reply> replyList = new ArrayList<>();
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "comment")
+    @OneToMany(mappedBy = "comment", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private final List<CommentLike> CommentLikeList = new ArrayList<>();
 
     @Column(nullable = false)

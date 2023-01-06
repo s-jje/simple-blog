@@ -14,4 +14,6 @@ public interface CategoryRepository extends JpaRepository<Category, Long> {
 
     List<Category> findAllByUserIdOrderByCategory(Long userId);
 
+    void deleteAllByUserId(Long userId);
+
 }
